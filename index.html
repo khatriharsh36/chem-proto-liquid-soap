@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Soap Lab - Castor Oil Liquid Soap Preparation</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧪 Virtual Soap Laboratory</h1>
+            <p>Interactive Liquid Soap Preparation Simulation</p>
+        </header>
+
+        <div class="lab-interface">
+            <!-- Left Panel: Material Inputs -->
+            <div class="panel inputs-panel">
+                <h2>Materials</h2>
+                
+                <div class="input-group">
+                    <label for="castorOil">Castor Oil (mL)</label>
+                    <input type="range" id="castorOil" min="50" max="200" value="100" class="slider">
+                    <span class="value" id="castorOilValue">100</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="koh">KOH (g)</label>
+                    <input type="range" id="koh" min="10" max="50" value="25" class="slider">
+                    <span class="value" id="kohValue">25</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="ethanol">Ethanol (mL)</label>
+                    <input type="range" id="ethanol" min="20" max="100" value="50" class="slider">
+                    <span class="value" id="ethanolValue">50</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="nacl">NaCl (g)</label>
+                    <input type="range" id="nacl" min="5" max="30" value="15" class="slider">
+                    <span class="value" id="naclValue">15</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="nahco3">NaHCO₃ (g)</label>
+                    <input type="range" id="nahco3" min="2" max="20" value="10" class="slider">
+                    <span class="value" id="nahco3Value">10</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="na2co3">Na₂CO₃ (g)</label>
+                    <input type="range" id="na2co3" min="3" max="25" value="12" class="slider">
+                    <span class="value" id="na2co3Value">12</span>
+                </div>
+
+                <!-- Control Panel -->
+                <div class="controls">
+                    <button id="playBtn" class="control-btn primary">▶️ Play</button>
+                    <button id="pauseBtn" class="control-btn">⏸️ Pause</button>
+                    <button id="nextBtn" class="control-btn">⏭️ Next</button>
+                    <button id="resetBtn" class="control-btn">🔄 Reset</button>
+                    <button id="voiceToggle" class="control-btn">🔊 Voice</button>
+                </div>
+            </div>
+
+            <!-- Center Panel: Animation -->
+            <div class="panel animation-panel">
+                <h2>Process Simulation</h2>
+                <div class="lab-container">
+                    <canvas id="labCanvas" width="400" height="300"></canvas>
+                    <div class="equipment">
+                        <!-- Beaker with liquid layers -->
+                        <div class="beaker" id="mainBeaker">
+                            <div class="liquid-layer" id="castorLayer"></div>
+                            <div class="liquid-layer" id="kohLayer"></div>
+                            <div class="liquid-layer" id="ethanolLayer"></div>
+                            <div class="liquid-layer" id="saltLayer"></div>
+                            <div class="liquid" id="soapMixture"></div>
+                        </div>
+                        
+                        <!-- Hand with chemical bottle -->
+                        <div class="hand-animation" id="pouringHand">
+                            <div class="hand">✋</div>
+                            <div class="bottle" id="chemicalBottle">
+                                <div class="bottle-liquid" id="bottleLiquid"></div>
+                                <div class="pour-stream" id="pourStream"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Stirrer -->
+                        <div class="stirrer" id="stirrer">
+                            <div class="stirrer-rod"></div>
+                            <div class="stirrer-paddle"></div>
+                        </div>
+                        
+                        <!-- Burner with flame -->
+                        <div class="burner-setup" id="burnerSetup">
+                            <div class="burner-base"></div>
+                            <div class="flame" id="flame">
+                                <div class="flame-inner"></div>
+                                <div class="flame-outer"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Steam effects -->
+                        <div class="steam-container" id="steamContainer">
+                            <div class="steam-particle"></div>
+                            <div class="steam-particle"></div>
+                            <div class="steam-particle"></div>
+                        </div>
+                        
+                        <!-- Thermometer -->
+                        <div class="thermometer" id="thermometer">
+                            <div class="thermometer-bulb"></div>
+                            <div class="thermometer-mercury" id="mercury"></div>
+                        </div>
+                        
+                        <!-- Chemical labels -->
+                        <div class="chemical-label" id="currentChemical">Ready</div>
+                        
+                        <!-- Timer Display -->
+                        <div class="timer-display" id="timerDisplay">
+                            <div class="timer-label">Time:</div>
+                            <div class="timer-value" id="timerValue">00:00</div>
+                        </div>
+                        
+                        <!-- Temperature Display -->
+                        <div class="temp-display" id="tempDisplay">
+                            <div class="temp-label">Temp:</div>
+                            <div class="temp-value" id="tempValue">25°C</div>
+                        </div>
+                        
+                        <!-- Chemical Bottles on Shelf -->
+                        <div class="chemical-shelf">
+                            <div class="shelf-bottle castor-bottle" id="castorBottle" data-chemical="castor" data-layer="castorLayer" data-color="#f6ad55">
+                                <div class="bottle-content castor-content"></div>
+                                <div class="bottle-cap"></div>
+                                <div class="bottle-label">
+                                    <div class="chemical-name">Castor Oil</div>
+                                    <div class="chemical-formula">C₅₇H₁₀₄O₉</div>
+                                </div>
+                            </div>
+                            <div class="shelf-bottle koh-bottle" id="kohBottle" data-chemical="koh" data-layer="kohLayer" data-color="#e2e8f0">
+                                <div class="bottle-content koh-content"></div>
+                                <div class="bottle-cap"></div>
+                                <div class="bottle-label">
+                                    <div class="chemical-name">Potassium Hydroxide</div>
+                                    <div class="chemical-formula">KOH</div>
+                                </div>
+                            </div>
+                            <div class="shelf-bottle ethanol-bottle" id="ethanolBottle" data-chemical="ethanol" data-layer="ethanolLayer" data-color="#bee3f8">
+                                <div class="bottle-content ethanol-content"></div>
+                                <div class="bottle-cap"></div>
+                                <div class="bottle-label">
+                                    <div class="chemical-name">Ethanol</div>
+                                    <div class="chemical-formula">C₂H₅OH</div>
+                                </div>
+                            </div>
+                            <div class="shelf-bottle salt-bottle" id="saltBottle" data-chemical="salt" data-layer="saltLayer" data-color="#ffffff">
+                                <div class="bottle-content salt-content"></div>
+                                <div class="bottle-cap"></div>
+                                <div class="bottle-label">
+                                    <div class="chemical-name">Salt Mix</div>
+                                    <div class="chemical-formula">NaCl + NaHCO₃ + Na₂CO₃</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Animated Chemical Bottle -->
+                        <div class="animated-bottle" id="animatedBottle">
+                            <div class="animated-bottle-content" id="animatedBottleContent"></div>
+                            <div class="animated-bottle-cap"></div>
+                            <div class="animated-pour-stream" id="animatedPourStream"></div>
+                        </div>
+                        
+                        <!-- Mixing Swirl Effect -->
+                        <div class="swirl-container" id="swirlContainer">
+                            <div class="swirl-line swirl-1"></div>
+                            <div class="swirl-line swirl-2"></div>
+                            <div class="swirl-line swirl-3"></div>
+                        </div>
+                        
+                        <!-- Filter Setup -->
+                        <div class="filter-setup" id="filterSetup">
+                            <div class="funnel"></div>
+                            <div class="filter-paper"></div>
+                            <div class="clean-container"></div>
+                            <div class="filtered-liquid" id="filteredLiquid"></div>
+                        </div>
+                        
+                        <!-- Final Soap Container -->
+                        <div class="soap-container" id="soapContainer">
+                            <div class="soap-liquid" id="finalSoap"></div>
+                            <div class="soap-foam" id="soapFoam"></div>
+                            <div class="soap-label">Liquid Soap Ready</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-indicator">
+                    <div class="step active" data-step="0">Mix Oils</div>
+                    <div class="step" data-step="1">Heat Mix</div>
+                    <div class="step" data-step="2">Add Salts</div>
+                    <div class="step" data-step="3">Filter</div>
+                    <div class="step" data-step="4">Final Soap</div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Live Observations -->
+            <div class="panel observations-panel">
+                <h2>Live Observations</h2>
+                
+                <div class="observation-grid">
+                    <div class="obs-item">
+                        <label>Volume:</label>
+                        <span id="finalVolume">0 mL</span>
+                    </div>
+                    
+                    <div class="obs-item">
+                        <label>Color:</label>
+                        <div class="color-display">
+                            <div class="color-indicator" id="colorIndicator"></div>
+                            <span id="colorName">Clear</span>
+                        </div>
+                    </div>
+                    
+                    <div class="obs-item">
+                        <label>Viscosity:</label>
+                        <span id="viscosity">Low</span>
+                    </div>
+                    
+                    <div class="obs-item">
+                        <label>pH:</label>
+                        <span id="phValue">7.0</span>
+                    </div>
+                    
+                    <div class="obs-item">
+                        <label>Temperature:</label>
+                        <span id="currentTemp">25°C</span>
+                    </div>
+                    
+                    <div class="obs-item">
+                        <label>Time:</label>
+                        <span id="elapsedTime">00:00</span>
+                    </div>
+                </div>
+
+                <div class="warnings" id="warnings"></div>
+
+                <div class="process-status">
+                    <h3>Status:</h3>
+                    <p id="processStatus">Ready</p>
+                </div>
+                
+                <div class="narration-text">
+                    <h3>Current Step:</h3>
+                    <p id="narrationText">Ready to begin soap preparation...</p>
+                </div>
+
+                <button id="downloadReport" class="download-btn">📄 Download Report</button>
+                
+                <!-- Chatbot Section -->
+                <div class="chatbot-section">
+                    <h3>🤖 Lab Assistant</h3>
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chatInput" placeholder="Ask about soap making..." maxlength="100">
+                        <button id="voiceInput" title="Voice Input">🎤</button>
+                        <button id="chatSend">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Modal -->
+        <div id="infoModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3 id="modalTitle"></h3>
+                <p id="modalText"></p>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
+
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modalTitle"></h3>
+            <p id="modalText"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

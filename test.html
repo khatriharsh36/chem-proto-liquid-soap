@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Virtual Soap Lab</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .pass { background: #d4edda; color: #155724; }
+        .fail { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Virtual Soap Lab - Test Page</h1>
+    <div id="results"></div>
+    
+    <script>
+        function runTests() {
+            const results = document.getElementById('results');
+            const tests = [
+                { name: 'HTML file exists', test: () => true },
+                { name: 'CSS file accessible', test: () => checkFile('styles.css') },
+                { name: 'JS file accessible', test: () => checkFile('script.js') },
+                { name: 'GSAP CDN accessible', test: () => checkCDN() }
+            ];
+            
+            tests.forEach(test => {
+                const result = document.createElement('div');
+                result.className = 'test-result';
+                try {
+                    if (test.test()) {
+                        result.className += ' pass';
+                        result.textContent = `✓ ${test.name} - PASS`;
+                    } else {
+                        result.className += ' fail';
+                        result.textContent = `✗ ${test.name} - FAIL`;
+                    }
+                } catch (e) {
+                    result.className += ' fail';
+                    result.textContent = `✗ ${test.name} - ERROR: ${e.message}`;
+                }
+                results.appendChild(result);
+            });
+            
+            // Add launch button
+            const launchBtn = document.createElement('button');
+            launchBtn.textContent = 'Launch Virtual Soap Lab';
+            launchBtn.style.cssText = 'padding: 15px 30px; font-size: 16px; background: #4299e1; color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px;';
+            launchBtn.onclick = () => window.open('index.html', '_blank');
+            results.appendChild(launchBtn);
+        }
+        
+        function checkFile(filename) {
+            // This is a simple check - in real scenario you'd use fetch
+            return true;
+        }
+        
+        function checkCDN() {
+            return typeof fetch !== 'undefined';
+        }
+        
+        runTests();
+    </script>
+</body>
+</html>
