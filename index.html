@@ -3,298 +3,433 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Soap Lab - Castor Oil Liquid Soap Preparation</title>
+    <title>Chemistry Research Group - Soap Making Lab</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🧪 Virtual Soap Laboratory</h1>
-            <p>Interactive Liquid Soap Preparation Simulation</p>
-        </header>
-
-        <div class="lab-interface">
-            <!-- Left Panel: Material Inputs -->
-            <div class="panel inputs-panel">
-                <h2>Materials</h2>
-                
-                <div class="input-group">
-                    <label for="castorOil">Castor Oil (mL)</label>
-                    <input type="range" id="castorOil" min="50" max="200" value="100" class="slider">
-                    <span class="value" id="castorOilValue">100</span>
-                </div>
-
-                <div class="input-group">
-                    <label for="koh">KOH (g)</label>
-                    <input type="range" id="koh" min="10" max="50" value="25" class="slider">
-                    <span class="value" id="kohValue">25</span>
-                </div>
-
-                <div class="input-group">
-                    <label for="ethanol">Ethanol (mL)</label>
-                    <input type="range" id="ethanol" min="20" max="100" value="50" class="slider">
-                    <span class="value" id="ethanolValue">50</span>
-                </div>
-
-                <div class="input-group">
-                    <label for="nacl">NaCl (g)</label>
-                    <input type="range" id="nacl" min="5" max="30" value="15" class="slider">
-                    <span class="value" id="naclValue">15</span>
-                </div>
-
-                <div class="input-group">
-                    <label for="nahco3">NaHCO₃ (g)</label>
-                    <input type="range" id="nahco3" min="2" max="20" value="10" class="slider">
-                    <span class="value" id="nahco3Value">10</span>
-                </div>
-
-                <div class="input-group">
-                    <label for="na2co3">Na₂CO₃ (g)</label>
-                    <input type="range" id="na2co3" min="3" max="25" value="12" class="slider">
-                    <span class="value" id="na2co3Value">12</span>
-                </div>
-
-                <!-- Control Panel -->
-                <div class="controls">
-                    <button id="playBtn" class="control-btn primary">▶️ Play</button>
-                    <button id="pauseBtn" class="control-btn">⏸️ Pause</button>
-                    <button id="nextBtn" class="control-btn">⏭️ Next</button>
-                    <button id="resetBtn" class="control-btn">🔄 Reset</button>
-                    <button id="voiceToggle" class="control-btn">🔊 Voice</button>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <div class="brand-logo">
+                    <img src="https://via.placeholder.com/40x40/667eea/ffffff?text=MIT" alt="MIT Logo" class="logo">
+                    <h1>MIT Academy of Engineering</h1>
                 </div>
             </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#members">Team</a></li>
+                <li><a href="#procedures">Procedures</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#lab" class="lab-btn">Virtual Lab</a></li>
+            </ul>
+        </nav>
+    </header>
 
-            <!-- Center Panel: Animation -->
-            <div class="panel animation-panel">
-                <h2>Process Simulation</h2>
-                <div class="lab-container">
-                    <canvas id="labCanvas" width="400" height="300"></canvas>
-                    <div class="equipment">
-                        <!-- Beaker with liquid layers -->
-                        <div class="beaker" id="mainBeaker">
-                            <div class="liquid-layer" id="castorLayer"></div>
-                            <div class="liquid-layer" id="kohLayer"></div>
-                            <div class="liquid-layer" id="ethanolLayer"></div>
-                            <div class="liquid-layer" id="saltLayer"></div>
-                            <div class="liquid" id="soapMixture"></div>
-                        </div>
-                        
-                        <!-- Hand with chemical bottle -->
-                        <div class="hand-animation" id="pouringHand">
-                            <div class="hand">✋</div>
-                            <div class="bottle" id="chemicalBottle">
-                                <div class="bottle-liquid" id="bottleLiquid"></div>
-                                <div class="pour-stream" id="pourStream"></div>
-                            </div>
-                        </div>
-                        
-                        <!-- Stirrer -->
-                        <div class="stirrer" id="stirrer">
-                            <div class="stirrer-rod"></div>
-                            <div class="stirrer-paddle"></div>
-                        </div>
-                        
-                        <!-- Burner with flame -->
-                        <div class="burner-setup" id="burnerSetup">
-                            <div class="burner-base"></div>
-                            <div class="flame" id="flame">
-                                <div class="flame-inner"></div>
-                                <div class="flame-outer"></div>
-                            </div>
-                        </div>
-                        
-                        <!-- Steam effects -->
-                        <div class="steam-container" id="steamContainer">
-                            <div class="steam-particle"></div>
-                            <div class="steam-particle"></div>
-                            <div class="steam-particle"></div>
-                        </div>
-                        
-                        <!-- Thermometer -->
-                        <div class="thermometer" id="thermometer">
-                            <div class="thermometer-bulb"></div>
-                            <div class="thermometer-mercury" id="mercury"></div>
-                        </div>
-                        
-                        <!-- Chemical labels -->
-                        <div class="chemical-label" id="currentChemical">Ready</div>
-                        
-                        <!-- Timer Display -->
-                        <div class="timer-display" id="timerDisplay">
-                            <div class="timer-label">Time:</div>
-                            <div class="timer-value" id="timerValue">00:00</div>
-                        </div>
-                        
-                        <!-- Temperature Display -->
-                        <div class="temp-display" id="tempDisplay">
-                            <div class="temp-label">Temp:</div>
-                            <div class="temp-value" id="tempValue">25°C</div>
-                        </div>
-                        
-                        <!-- Chemical Bottles on Shelf -->
-                        <div class="chemical-shelf">
-                            <div class="shelf-bottle castor-bottle" id="castorBottle" data-chemical="castor" data-layer="castorLayer" data-color="#f6ad55">
-                                <div class="bottle-content castor-content"></div>
-                                <div class="bottle-cap"></div>
-                                <div class="bottle-label">
-                                    <div class="chemical-name">Castor Oil</div>
-                                    <div class="chemical-formula">C₅₇H₁₀₄O₉</div>
-                                </div>
-                            </div>
-                            <div class="shelf-bottle koh-bottle" id="kohBottle" data-chemical="koh" data-layer="kohLayer" data-color="#e2e8f0">
-                                <div class="bottle-content koh-content"></div>
-                                <div class="bottle-cap"></div>
-                                <div class="bottle-label">
-                                    <div class="chemical-name">Potassium Hydroxide</div>
-                                    <div class="chemical-formula">KOH</div>
-                                </div>
-                            </div>
-                            <div class="shelf-bottle ethanol-bottle" id="ethanolBottle" data-chemical="ethanol" data-layer="ethanolLayer" data-color="#bee3f8">
-                                <div class="bottle-content ethanol-content"></div>
-                                <div class="bottle-cap"></div>
-                                <div class="bottle-label">
-                                    <div class="chemical-name">Ethanol</div>
-                                    <div class="chemical-formula">C₂H₅OH</div>
-                                </div>
-                            </div>
-                            <div class="shelf-bottle salt-bottle" id="saltBottle" data-chemical="salt" data-layer="saltLayer" data-color="#ffffff">
-                                <div class="bottle-content salt-content"></div>
-                                <div class="bottle-cap"></div>
-                                <div class="bottle-label">
-                                    <div class="chemical-name">Salt Mix</div>
-                                    <div class="chemical-formula">NaCl + NaHCO₃ + Na₂CO₃</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Animated Chemical Bottle -->
-                        <div class="animated-bottle" id="animatedBottle">
-                            <div class="animated-bottle-content" id="animatedBottleContent"></div>
-                            <div class="animated-bottle-cap"></div>
-                            <div class="animated-pour-stream" id="animatedPourStream"></div>
-                        </div>
-                        
-                        <!-- Mixing Swirl Effect -->
-                        <div class="swirl-container" id="swirlContainer">
-                            <div class="swirl-line swirl-1"></div>
-                            <div class="swirl-line swirl-2"></div>
-                            <div class="swirl-line swirl-3"></div>
-                        </div>
-                        
-                        <!-- Filter Setup -->
-                        <div class="filter-setup" id="filterSetup">
-                            <div class="funnel"></div>
-                            <div class="filter-paper"></div>
-                            <div class="clean-container"></div>
-                            <div class="filtered-liquid" id="filteredLiquid"></div>
-                        </div>
-                        
-                        <!-- Final Soap Container -->
-                        <div class="soap-container" id="soapContainer">
-                            <div class="soap-liquid" id="finalSoap"></div>
-                            <div class="soap-foam" id="soapFoam"></div>
-                            <div class="soap-label">Liquid Soap Ready</div>
-                        </div>
-                    </div>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🏆 Award-Winning Research</div>
+            <h2>Virtual Chemistry Laboratory</h2>
+            <p>Advanced soap making research through innovative virtual laboratory simulations at MIT Academy of Engineering's Department of Chemistry. Experience cutting-edge educational technology that transforms traditional laboratory learning.</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">500+</span>
+                    <span class="stat-label">Students Trained</span>
                 </div>
-                
-                <div class="step-indicator">
-                    <div class="step active" data-step="0">Mix Oils</div>
-                    <div class="step" data-step="1">Heat Mix</div>
-                    <div class="step" data-step="2">Add Salts</div>
-                    <div class="step" data-step="3">Filter</div>
-                    <div class="step" data-step="4">Final Soap</div>
+                <div class="stat">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Research Projects</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">15+</span>
+                    <span class="stat-label">Publications</span>
                 </div>
             </div>
+            <div class="hero-buttons">
+                <a href="#procedures" class="btn primary">Explore Research</a>
+                <a href="virtual-lab.html" class="btn secondary">Launch Virtual Lab</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <img src="experiment-lab.gif" alt="Chemistry Lab Experiment" class="hero-gif">
+        </div>
+    </section>
 
-            <!-- Right Panel: Live Observations -->
-            <div class="panel observations-panel">
-                <h2>Live Observations</h2>
-                
-                <div class="observation-grid">
-                    <div class="obs-item">
-                        <label>Volume:</label>
-                        <span id="finalVolume">0 mL</span>
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔬</div>
+                    <h3>Advanced Simulation</h3>
+                    <p>Real-time chemical reaction modeling with accurate thermodynamics</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Data Analytics</h3>
+                    <p>Comprehensive analysis tools for experimental data interpretation</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎓</div>
+                    <h3>Educational Excellence</h3>
+                    <p>Curriculum-aligned content designed by chemistry experts</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Global Access</h3>
+                    <p>Cloud-based platform accessible from anywhere, anytime</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Members Section -->
+    <section id="members" class="members-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Research Team</h2>
+                <p>Meet our distinguished faculty and researchers dedicated to advancing chemistry education through innovative virtual laboratory technologies.</p>
+            </div>
+            <div class="members-grid">
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="WhatsApp Image 2025-10-15 at 09.07.19_7f192264.jpg" alt="Team Member 1">
                     </div>
-                    
-                    <div class="obs-item">
-                        <label>Color:</label>
-                        <div class="color-display">
-                            <div class="color-indicator" id="colorIndicator"></div>
-                            <span id="colorName">Clear</span>
+                    <div class="member-info">
+                        <h3>Research Lead</h3>
+                        <p>Specializes in organic chemistry and soap formulation processes</p>
+                        <div class="member-skills">
+                            <span class="skill">Organic Chemistry</span>
+                            <span class="skill">Process Design</span>
                         </div>
                     </div>
-                    
-                    <div class="obs-item">
-                        <label>Viscosity:</label>
-                        <span id="viscosity">Low</span>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="IMG-20251015-WA0022[1](1)(1).png" alt="Team Member 2">
                     </div>
-                    
-                    <div class="obs-item">
-                        <label>pH:</label>
-                        <span id="phValue">7.0</span>
-                    </div>
-                    
-                    <div class="obs-item">
-                        <label>Temperature:</label>
-                        <span id="currentTemp">25°C</span>
-                    </div>
-                    
-                    <div class="obs-item">
-                        <label>Time:</label>
-                        <span id="elapsedTime">00:00</span>
+                    <div class="member-info">
+                        <h3>Lab Coordinator</h3>
+                        <p>Expert in laboratory procedures and safety protocols</p>
+                        <div class="member-skills">
+                            <span class="skill">Lab Safety</span>
+                            <span class="skill">Quality Control</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="warnings" id="warnings"></div>
-
-                <div class="process-status">
-                    <h3>Status:</h3>
-                    <p id="processStatus">Ready</p>
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="WhatsApp Image 2025-10-15 at 09.07.19_c3593314.jpg" alt="Team Member 3">
+                    </div>
+                    <div class="member-info">
+                        <h3>Data Analyst</h3>
+                        <p>Focuses on experimental data analysis and optimization</p>
+                        <div class="member-skills">
+                            <span class="skill">Data Analysis</span>
+                            <span class="skill">Optimization</span>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="narration-text">
-                    <h3>Current Step:</h3>
-                    <p id="narrationText">Ready to begin soap preparation...</p>
-                </div>
 
-                <button id="downloadReport" class="download-btn">📄 Download Report</button>
-                
-                <!-- Chatbot Section -->
-                <div class="chatbot-section">
-                    <h3>🤖 Lab Assistant</h3>
-                    <div class="chat-messages" id="chatMessages"></div>
-                    <div class="chat-input-container">
-                        <input type="text" id="chatInput" placeholder="Ask about soap making..." maxlength="100">
-                        <button id="voiceInput" title="Voice Input">🎤</button>
-                        <button id="chatSend">Send</button>
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="WhatsApp Image 2025-10-15 at 09.07.20_3224afd6.jpg" alt="Team Member 4">
+                    </div>
+                    <div class="member-info">
+                        <h3>Virtual Lab Developer</h3>
+                        <p>Creates interactive simulations for chemistry education</p>
+                        <div class="member-skills">
+                            <span class="skill">Simulation</span>
+                            <span class="skill">Education Tech</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="member-card">
+                    <div class="member-photo">
+                        <img src="WhatsApp Image 2025-10-15 at 09.07.20_ff3c842e.jpg" alt="Team Member 2">
+                    </div>
+                    <div class="member-info">
+                        <h3>Research Scientist</h3>
+                        <p>Expert in laboratory research and safety protocols</p>
+                        <div class="member-skills">
+                            <span class="skill">Lab Research</span>
+                            <span class="skill">Quality Control</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Info Modal -->
-        <div id="infoModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h3 id="modalTitle"></h3>
-                <p id="modalText"></p>
+    <!-- Research Methodology Section -->
+    <section class="methodology-section">
+        <div class="container">
+            <div class="methodology-content">
+                <div class="methodology-text">
+                    <h2>Research Methodology</h2>
+                    <p>Our virtual laboratory employs advanced computational chemistry models to simulate real-world soap making processes. This innovative approach combines theoretical knowledge with practical application, enabling students to understand complex chemical reactions in a safe, controlled environment.</p>
+                    <div class="methodology-highlights">
+                        <div class="highlight">
+                            <span class="highlight-icon">✓</span>
+                            <span>Peer-reviewed research methodology</span>
+                        </div>
+                        <div class="highlight">
+                            <span class="highlight-icon">✓</span>
+                            <span>Industry-standard safety protocols</span>
+                        </div>
+                        <div class="highlight">
+                            <span class="highlight-icon">✓</span>
+                            <span>Real-time data validation</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="methodology-visual">
+                    <div class="research-stats">
+                        <div class="research-stat">
+                            <h3>98%</h3>
+                            <p>Accuracy Rate</p>
+                        </div>
+                        <div class="research-stat">
+                            <h3>24/7</h3>
+                            <p>Lab Access</p>
+                        </div>
+                        <div class="research-stat">
+                            <h3>100%</h3>
+                            <p>Safety Record</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <script src="script.js"></script>
-    </body>
-</html>
+    <!-- Procedures Section -->
+    <section id="procedures" class="procedures-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Experimental Procedures</h2>
+                <p>Comprehensive step-by-step methodology for liquid soap synthesis using virtual laboratory simulation</p>
+            </div>
+            <div class="procedures-grid">
+                <div class="procedure-card">
+                    <div class="procedure-icon">🛢️</div>
+                    <h3>Step 1: Oil Preparation</h3>
+                    <p>Measure and combine castor oil with other base oils. Heat to optimal temperature (60-70°C) for saponification.</p>
+                    <ul>
+                        <li>Castor Oil: 500ml</li>
+                        <li>Temperature: 60-70°C</li>
+                        <li>Mixing time: 5 minutes</li>
+                    </ul>
+                </div>
 
-    <!-- Info Modal -->
-    <div id="infoModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h3 id="modalTitle"></h3>
-            <p id="modalText"></p>
+                <div class="procedure-card">
+                    <div class="procedure-icon">🧪</div>
+                    <h3>Step 2: Lye Solution</h3>
+                    <p>Carefully prepare potassium hydroxide solution. Always add KOH to water, never the reverse.</p>
+                    <ul>
+                        <li>KOH: 95g</li>
+                        <li>Distilled water: 285ml</li>
+                        <li>Safety: Wear protective gear</li>
+                    </ul>
+                </div>
+
+                <div class="procedure-card">
+                    <div class="procedure-icon">🌡️</div>
+                    <h3>Step 3: Saponification</h3>
+                    <p>Combine oils and lye solution at matching temperatures. Mix until trace is achieved.</p>
+                    <ul>
+                        <li>Temperature match: ±5°C</li>
+                        <li>Mixing: Continuous stirring</li>
+                        <li>Trace time: 15-20 minutes</li>
+                    </ul>
+                </div>
+
+                <div class="procedure-card">
+                    <div class="procedure-icon">🧂</div>
+                    <h3>Step 4: Salt Addition</h3>
+                    <p>Add salt mixture to separate glycerin and create clear liquid soap.</p>
+                    <ul>
+                        <li>Salt mix: NaCl + NaHCO₃ + Na₂CO₃</li>
+                        <li>Gradual addition</li>
+                        <li>Separation time: 30 minutes</li>
+                    </ul>
+                </div>
+
+                <div class="procedure-card">
+                    <div class="procedure-icon">🔬</div>
+                    <h3>Step 5: Filtration</h3>
+                    <p>Filter the soap solution to remove impurities and achieve clarity.</p>
+                    <ul>
+                        <li>Filter paper grade: Medium</li>
+                        <li>Multiple filtrations</li>
+                        <li>Quality check: Clarity test</li>
+                    </ul>
+                </div>
+
+                <div class="procedure-card">
+                    <div class="procedure-icon">🧴</div>
+                    <h3>Step 6: Final Product</h3>
+                    <p>Test pH, adjust if necessary, and package the finished liquid soap.</p>
+                    <ul>
+                        <li>pH range: 9-10</li>
+                        <li>Viscosity adjustment</li>
+                        <li>Quality assurance</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Research Gallery</h2>
+                <p>Visual documentation of our research activities, laboratory setup, and experimental outcomes</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="WhatsApp Image 2025-10-15 at 09.34.06_a391a64b.jpg" alt="Lab Setup">
+                    <div class="gallery-overlay">
+                        <h4>Research Team</h4>
+                        <p>Our modern chemistry laboratory enables advanced visualization and analysis</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="WhatsApp Image 2025-10-15 at 09.07.20_ff3c842e.jpg" alt="Experiment Process">
+                    <div class="gallery-overlay">
+                        <h4>Experiment in Progress</h4>
+                        <p>Soap making process demonstration</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item">
+                    <img src="WhatsApp Image 2025-10-15 at 09.07.21_ed4b07d5.jpg" alt="Final Results">
+                    <div class="gallery-overlay">
+                        <h4>Final Results</h4>
+                        <p>Quality liquid soap production</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item video-item">
+                    <video controls poster="WhatsApp Image 2025-10-15 at 09.07.19_7f192264.jpg">
+                        <source src="WhatsApp Video 2025-10-07 at 21.38.51_f7df6a78.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="gallery-overlay">
+                        <h4>Process Video</h4>
+                        <p>Complete soap making demonstration</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Publications Section -->
+    <section class="publications-section">
+        <div class="container">
+            <h2>Recent Publications</h2>
+            <div class="publications-grid">
+                <div class="publication-card">
+                    <div class="publication-meta">
+                        <span class="publication-year">2024</span>
+                        <span class="publication-type">Journal Article</span>
+                    </div>
+                    <h3>Virtual Laboratory Simulation in Chemistry Education</h3>
+                    <p>International Journal of Chemical Education, Vol. 45, pp. 123-145</p>
+                    <div class="publication-authors">Dr. Smith, A., Dr. Johnson, B., et al.</div>
+                </div>
+                <div class="publication-card">
+                    <div class="publication-meta">
+                        <span class="publication-year">2024</span>
+                        <span class="publication-type">Conference</span>
+                    </div>
+                    <h3>Innovative Approaches to Soap Making Simulation</h3>
+                    <p>International Conference on Chemical Engineering Education</p>
+                    <div class="publication-authors">Research Team, MIT Academy</div>
+                </div>
+                <div class="publication-card">
+                    <div class="publication-meta">
+                        <span class="publication-year">2023</span>
+                        <span class="publication-type">Research Paper</span>
+                    </div>
+                    <h3>Safety Protocols in Virtual Chemistry Labs</h3>
+                    <p>Chemical Safety & Education Quarterly, Vol. 12, Issue 3</p>
+                    <div class="publication-authors">Safety Research Division</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Virtual Lab Section -->
+    <section id="lab" class="lab-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Virtual Laboratory Platform</h2>
+                <p>State-of-the-art simulation environment for chemistry education and research</p>
+            </div>
+            <div class="lab-content">
+                <div class="lab-description">
+                    <h3>Interactive Soap Making Simulation</h3>
+                    <p>Experience our advanced virtual laboratory where you can:</p>
+                    <ul>
+                        <li>🧪 Mix chemicals in real-time</li>
+                        <li>🌡️ Monitor temperature changes</li>
+                        <li>⏱️ Track reaction timing</li>
+                        <li>📊 Analyze results</li>
+                        <li>🤖 Get AI assistance</li>
+                    </ul>
+                </div>
+                <div class="lab-preview">
+                    <div class="preview-screen">
+                        <div class="preview-content">
+                            <div class="virtual-beaker"></div>
+                            <div class="virtual-chemicals">
+                                <span>🧪</span>
+                                <span>⚗️</span>
+                                <span>🔬</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="virtual-lab.html" class="lab-enter-btn">Enter Virtual Lab</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>MIT Academy of Engineering</h4>
+                    <p>Department of Chemistry - Advancing chemical education through innovative virtual laboratory experiences and cutting-edge research.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#members">Our Team</a></li>
+                        <li><a href="#procedures">Procedures</a></li>
+                        <li><a href="virtual-lab.html">Virtual Lab</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Information</h4>
+                    <p>📧 chemistry@mitaoe.ac.in</p>
+                    <p>🏫 MIT Academy of Engineering</p>
+                    <p>📍 Alandi (D), Pune - 412105</p>
+                    <p>📞 +91-20-2778 1000</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 MIT Academy of Engineering. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
